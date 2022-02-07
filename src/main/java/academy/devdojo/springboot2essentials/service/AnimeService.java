@@ -25,6 +25,10 @@ public class AnimeService {
     public Page<Anime> listAll(Pageable pageable) {
         return animeRepository.findAll(pageable);
     }
+    
+    public List<Anime> listAllNonPageable() {
+        return animeRepository.findAll();
+    }
 
     public List<Anime> findByName(String name) {
         return animeRepository.findByName(name);
@@ -40,14 +44,17 @@ public class AnimeService {
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
 
+    @Transactional
     public void delete(long id) {
         animeRepository.delete(findByIdOrThrowBadRequestException(id));
     }
 
+    @Transactional
     public void replace(AnimePutRequestBody animePutRequestBody) {
         Anime savedAnime = this.findByIdOrThrowBadRequestException(animePutRequestBody.getId());
         Anime anime = AnimeMapper.INSTANCE.toAnime(animePutRequestBody);
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
+
 }
